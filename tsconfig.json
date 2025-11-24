@@ -1,0 +1,22 @@
+{
+  "include": ["src", "scripts"],
+  "compilerOptions": {
+    "target": "ES2015",
+    "lib": ["DOM", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react",
+    "skipLibCheck": true,
+    "outDir": "temp",
+    "declaration": true,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "declarationDir": "dist/types",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "schedule": ["every 2 weeks on sunday before 5am"],
+  "groupName": "all dependencies",
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "groupName": "all dependencies"
+    }
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0
+}
