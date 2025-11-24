@@ -1,1 +1,1 @@
-export * from '@/types/public';
+export * from "./types/public"
