@@ -1,3 +1,13 @@
-export * from "./types/public"
-export { LiteRtProvider } from "./providers/LiteRtProvider"
-export { useLiteRtRuntime } from "./hooks/useLiteRtRuntime"
+export type {
+    Accelerator,
+    LiteRtConfig,
+    LiteRtRuntimeStatus,
+    LiteRtModelStatus,
+    UseLiteRtRuntimeResult,
+    UseLiteRtTfjsModelOptions,
+    UseLiteRtTfjsModelResult,
+    LiteRtTensorInfo,
+} from "./types/public"
+
+export { LiteRtProvider } from "./providers/LiteRtProvider";
+export { useLiteRtRuntime } from "./hooks/useLiteRtRuntime";
