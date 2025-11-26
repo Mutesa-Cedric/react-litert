@@ -1,5 +1,5 @@
 import type * as tf from "@tensorflow/tfjs-core";
-
+import type { CompiledModel, Tensor } from "@litertjs/core";
 
 // ---------- Shared Types ----------
 export type Accelerator = "webgpu" | "wasm";
@@ -64,17 +64,19 @@ export interface UseLiteRtModelOptions {
     lazy?: boolean;
 }
 
+
 export interface UseLiteRtModelResult<
-    In = import("@litertjs/core").Tensor |
-    import("@litertjs/core").Tensor[] |
-    Record<string, import("@litertjs/core").Tensor>,
-    Out = import("@litertjs/core").Tensor[] |
-    Record<string, import("@litertjs/core").Tensor>
+    In = Tensor | Tensor[] | Record<string, Tensor>,
+    Out = Tensor[] | Record<string, Tensor>
 > {
     status: LiteRtModelStatus;
     error: Error | null;
     accelerator: Accelerator | null;
 
+    /** The underlying LiteRT compiled model, or null while loading. */
+    model: CompiledModel | null;
+
+    /** Low-level run using LiteRT tensors. */
     runRaw: (input: In, signature?: string) => Promise<Out>;
 
     inputDetails: LiteRtTensorInfo[] | null;
@@ -101,3 +103,23 @@ export interface UseLiteRtTfjsModelResult<
     inputDetails: LiteRtTensorInfo[] | null;
     outputDetails: LiteRtTensorInfo[] | null;
 }
+
+
+export type TfjsInput =
+    | tf.Tensor
+    | tf.Tensor[]
+    | Record<string, tf.Tensor>;
+
+export type TfjsOutput =
+    | tf.Tensor
+    | tf.Tensor[]
+    | Record<string, tf.Tensor>;
+
+export type LiteRtInput =
+    | Tensor
+    | Tensor[]
+    | Record<string, Tensor>;
+
+export type LiteRtOutput =
+    | Tensor[]
+    | Record<string, Tensor>;

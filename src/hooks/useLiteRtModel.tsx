@@ -10,14 +10,16 @@ import { useLiteRtRuntime } from "./useLiteRtRuntime";
 
 import type {
     Accelerator,
+    LiteRtInput,
     LiteRtModelStatus,
+    LiteRtOutput,
     UseLiteRtModelOptions,
     UseLiteRtModelResult
 } from "../types/public";
 
 export function useLiteRtModel<
-    In = Tensor | Tensor[] | Record<string, Tensor>,
-    Out = Tensor[] | Record<string, Tensor>
+    In = LiteRtInput,
+    Out = LiteRtOutput
 >(options: UseLiteRtModelOptions): UseLiteRtModelResult<In, Out> {
     const runtime = useLiteRtRuntime();
 
@@ -85,6 +87,7 @@ export function useLiteRtModel<
 
     return {
         status,
+        model,
         error,
         accelerator,
         runRaw,

@@ -1767,6 +1767,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@litertjs/tfjs-interop@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@litertjs/tfjs-interop@npm:1.0.1"
+  peerDependencies:
+    "@litertjs/core": ^0.2.1
+    "@tensorflow/tfjs-core": ^4.22.0
+  checksum: 10c0/5329674e7d132277ad9cd5da61eea262678f5e16b7b90083d938910d106beaef405b596562613854751336bf427891d98294e14e37c4b0d9fdbfe71ad76e89bd
+  languageName: node
+  linkType: hard
+
 "@litertjs/wasm-utils@npm:^0.2.1":
   version: 0.2.1
   resolution: "@litertjs/wasm-utils@npm:0.2.1"
@@ -6453,6 +6463,7 @@ __metadata:
     "@eslint/js": "npm:^9.35.0"
     "@ianvs/prettier-plugin-sort-imports": "npm:^4.7.0"
     "@litertjs/core": "npm:^0.2.1"
+    "@litertjs/tfjs-interop": "npm:^1.0.1"
     "@rollup/plugin-alias": "npm:^6.0.0"
     "@rollup/plugin-commonjs": "npm:^29.0.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.1"

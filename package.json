@@ -2,7 +2,7 @@
   "name": "react-litert",
   "description": "React integration for Google’s LiteRT.js",
   "packageManager": "yarn@4.11.0",
-  "version": "0.7.0",
+  "version": "0.1.0",
   "type": "module",
   "author": "Cedric Mutesa <mutesacedric@gmail.com>",
   "engines": {
@@ -100,6 +100,7 @@
   },
   "dependencies": {
     "@litertjs/core": "^0.2.1",
+    "@litertjs/tfjs-interop": "^1.0.1",
     "@tensorflow/tfjs-core": "^4.22.0"
   },
   "peerDependencies": {

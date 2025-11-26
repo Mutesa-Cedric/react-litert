@@ -1,13 +1,11 @@
+
 export type {
     Accelerator,
-    LiteRtConfig,
-    LiteRtRuntimeStatus,
-    LiteRtModelStatus,
-    UseLiteRtRuntimeResult,
+    LiteRtConfig, LiteRtModelStatus, LiteRtRuntimeStatus, LiteRtTensorInfo, UseLiteRtRuntimeResult,
     UseLiteRtTfjsModelOptions,
-    UseLiteRtTfjsModelResult,
-    LiteRtTensorInfo,
-} from "./types/public"
+    UseLiteRtTfjsModelResult
+} from "./types/public";
 
-export { LiteRtProvider } from "./providers/LiteRtProvider";
 export { useLiteRtRuntime } from "./hooks/useLiteRtRuntime";
+export { useLiteRtTfjsModel } from "./hooks/useLiteRtTfjsModel";
+export { LiteRtProvider } from "./providers/LiteRtProvider";
