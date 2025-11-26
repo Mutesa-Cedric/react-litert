@@ -12,7 +12,8 @@
     "WebAI",
     "litert",
     "google",
-    "lite runtime"
+    "lite runtime",
+    "react"
   ],
   "license": "MIT",
   "repository": {
