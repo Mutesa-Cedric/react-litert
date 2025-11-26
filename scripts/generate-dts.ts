@@ -21,14 +21,8 @@ async function generateDts() {
     //core.d.ts
     const coreDtsPath = path.join(process.cwd(), 'dist/types/core.d.ts');
     if (await fs.pathExists(coreDtsPath)) {
-      await fs.copy(
-        coreDtsPath,
-        path.join(process.cwd(), 'dist/types/core.d.mts')
-      );
-      await fs.copy(
-        coreDtsPath,
-        path.join(process.cwd(), 'dist/types/core.d.cts')
-      );
+      await fs.copy(coreDtsPath, path.join(process.cwd(), 'dist/types/core.d.mts'));
+      await fs.copy(coreDtsPath, path.join(process.cwd(), 'dist/types/core.d.cts'));
       await fs.remove(coreDtsPath);
     }
   } catch (err) {

@@ -1,49 +1,46 @@
-import {
-    isWebGPUSupported
-} from "@litertjs/core";
-import { useEffect, useRef, useState } from "react";
-
-import runtimeSingleton from "../internal/runtimeSingleton";
-import { useLiteRtConfig } from "@/providers/LiteRtProvider";
-import type { LiteRtRuntimeStatus, UseLiteRtRuntimeResult } from "../types/public";
+import runtimeSingleton from '../internal/runtimeSingleton';
+import type { LiteRtRuntimeStatus, UseLiteRtRuntimeResult } from '../types/public';
+import { useLiteRtConfig } from '@/providers/LiteRtProvider';
+import { isWebGPUSupported } from '@litertjs/core';
+import { useEffect, useRef, useState } from 'react';
 
 export function useLiteRtRuntime(): UseLiteRtRuntimeResult {
-    const config = useLiteRtConfig();
+  const config = useLiteRtConfig();
 
-    const [status, setStatus] = useState<LiteRtRuntimeStatus>("idle");
-    const [error, setError] = useState<Error | null>(null);
+  const [status, setStatus] = useState<LiteRtRuntimeStatus>('idle');
+  const [error, setError] = useState<Error | null>(null);
 
-    // StrictMode guard
-    const initialized = useRef(false);
+  // StrictMode guard
+  const initialized = useRef(false);
 
-    useEffect(() => {
-        if (initialized.current) return;
-        initialized.current = true;
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
 
-        async function initRuntime() {
-            try {
-                setStatus("loading");
+    async function initRuntime() {
+      try {
+        setStatus('loading');
 
-                // Singleton ensures we only run this once globally
-                await runtimeSingleton.load(config);
+        // Singleton ensures we only run this once globally
+        await runtimeSingleton.load(config);
 
-                setStatus("ready");
-            } catch (e) {
-                const err = e as Error;
-                setError(err);
-                setStatus("error");
+        setStatus('ready');
+      } catch (e) {
+        const err = e as Error;
+        setError(err);
+        setStatus('error');
 
-                config.onRuntimeError?.(err);
-            }
-        }
+        config.onRuntimeError?.(err);
+      }
+    }
 
-        initRuntime();
-    }, []);
+    initRuntime();
+  }, []);
 
-    return {
-        status,
-        error,
-        supportsWebGpu: isWebGPUSupported(),
-        supportsWasm: true, // always true as fallback
-    };
+  return {
+    status,
+    error,
+    supportsWebGpu: isWebGPUSupported(),
+    supportsWasm: true, // always true as fallback
+  };
 }
