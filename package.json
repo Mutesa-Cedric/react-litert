@@ -2,7 +2,7 @@
   "name": "react-litert",
   "description": "React integration for Google’s LiteRT.js",
   "packageManager": "yarn@4.11.0",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "author": "Cedric Mutesa <mutesacedric@gmail.com>",
   "engines": {
