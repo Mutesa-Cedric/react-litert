@@ -21,3 +21,4 @@ yarn.lock
 CONTRIBUTING.md
 renovate.json
 .husky
+examples

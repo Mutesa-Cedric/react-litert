@@ -20,10 +20,8 @@ export function useLiteRtRuntime(): UseLiteRtRuntimeResult {
     async function initRuntime() {
       try {
         setStatus('loading');
-
         // Singleton ensures we only run this once globally
         await runtimeSingleton.load(config);
-
         setStatus('ready');
       } catch (e) {
         const err = e as Error;
@@ -35,7 +33,7 @@ export function useLiteRtRuntime(): UseLiteRtRuntimeResult {
     }
 
     initRuntime();
-  }, []);
+  }, [config]);
 
   return {
     status,

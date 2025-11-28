@@ -1,3 +1,9 @@
+/*
+ * Including Tensorflow backends in the bundle to avoid the need to import them in client apps
+ */
+import '@tensorflow/tfjs-backend-webgpu';
+import '@tensorflow/tfjs-backend-cpu';
+
 export type {
   Accelerator,
   LiteRtConfig,

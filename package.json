@@ -1,9 +1,12 @@
 {
   "name": "react-litert",
-  "description": "React integration for Google’s LiteRT.js",
+  "description": "React integration for Google's LiteRT.js",
   "packageManager": "yarn@4.11.0",
   "version": "0.1.1",
   "type": "module",
+  "workspaces": [
+    "examples/*"
+  ],
   "author": "Cedric Mutesa <mutesacedric@gmail.com>",
   "engines": {
     "node": ">=16.6.0"
@@ -104,6 +107,8 @@
   "dependencies": {
     "@litertjs/core": "^0.2.1",
     "@litertjs/tfjs-interop": "^1.0.1",
+    "@tensorflow/tfjs-backend-cpu": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.22.0"
   },
   "peerDependencies": {

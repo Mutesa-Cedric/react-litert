@@ -1,10 +1,12 @@
 import { LiteRtConfig, LiteRtProviderProps } from '@/types/public';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 const LiteRtContext = createContext<LiteRtConfig>({});
 
 export const LiteRtProvider = ({ children, config }: LiteRtProviderProps) => {
-  return <LiteRtContext.Provider value={config || {}}>{children}</LiteRtContext.Provider>;
+  const stableConfig = useMemo(() => config || {}, [config]);
+
+  return <LiteRtContext.Provider value={stableConfig}>{children}</LiteRtContext.Provider>;
 };
 
 export const useLiteRtConfig = () => {
