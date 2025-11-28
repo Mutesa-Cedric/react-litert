@@ -1,0 +1,25 @@
+{
+  "name": "react-litert-image-classification-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@adobe/react-spectrum": "^3.45.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-litert": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}
