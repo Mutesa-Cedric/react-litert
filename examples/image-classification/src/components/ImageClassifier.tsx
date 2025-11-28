@@ -1,16 +1,8 @@
-import {
-  Badge,
-  Button,
-  Flex,
-  Heading,
-  ProgressCircle,
-  Text,
-  View,
-} from '@adobe/react-spectrum';
+import { imagenetClasses } from '../utils/imagenetClasses';
+import { Badge, Button, Flex, Heading, ProgressCircle, Text, View } from '@adobe/react-spectrum';
 import * as tf from '@tensorflow/tfjs-core';
 import { useState } from 'react';
 import { useLiteRtTfjsModel } from 'react-litert';
-import { imagenetClasses } from '../utils/imagenetClasses';
 
 interface Prediction {
   label: string;
@@ -120,9 +112,7 @@ export default function ImageClassifier() {
             <Badge variant={status === 'ready' ? 'positive' : 'neutral'}>
               {status.toUpperCase()}
             </Badge>
-            {accelerator && (
-              <Badge variant="info">{accelerator.toUpperCase()}</Badge>
-            )}
+            {accelerator && <Badge variant="info">{accelerator.toUpperCase()}</Badge>}
           </Flex>
         </View>
 
@@ -135,7 +125,9 @@ export default function ImageClassifier() {
                 borderRadius="medium"
                 UNSAFE_style={{ border: '1px solid #d32f2f' }}
               >
-                <Text><strong>Error:</strong> {error.message}</Text>
+                <Text>
+                  <strong>Error:</strong> {error.message}
+                </Text>
               </View>
             )}
 
@@ -165,7 +157,14 @@ export default function ImageClassifier() {
                       color: '#666',
                     }}
                   >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="17 8 12 3 7 8" />
                       <line x1="12" y1="3" x2="12" y2="15" />
@@ -174,9 +173,7 @@ export default function ImageClassifier() {
                   <Heading level={3} UNSAFE_style={{ margin: 0, fontWeight: 600 }}>
                     Upload Image
                   </Heading>
-                  <Text UNSAFE_style={{ color: '#6e6e6e' }}>
-                    Click to select or drag and drop
-                  </Text>
+                  <Text UNSAFE_style={{ color: '#6e6e6e' }}>Click to select or drag and drop</Text>
                   <Button
                     variant="cta"
                     onPress={() => document.getElementById('file-input')?.click()}
@@ -230,7 +227,10 @@ export default function ImageClassifier() {
                     padding="size-300"
                   >
                     <Flex direction="column" gap="size-200">
-                      <Heading level={4} UNSAFE_style={{ margin: 0, fontWeight: 600, fontSize: '1rem' }}>
+                      <Heading
+                        level={4}
+                        UNSAFE_style={{ margin: 0, fontWeight: 600, fontSize: '1rem' }}
+                      >
                         Results
                       </Heading>
                       {predictions.map((pred, idx) => (
@@ -248,11 +248,13 @@ export default function ImageClassifier() {
                               <Text UNSAFE_style={{ fontWeight: 500, fontSize: '0.875rem' }}>
                                 {pred.label}
                               </Text>
-                              <Text UNSAFE_style={{
-                                fontWeight: 600,
-                                fontSize: '0.875rem',
-                                color: idx === 0 ? '#0d66d0' : '#6e6e6e',
-                              }}>
+                              <Text
+                                UNSAFE_style={{
+                                  fontWeight: 600,
+                                  fontSize: '0.875rem',
+                                  color: idx === 0 ? '#0d66d0' : '#6e6e6e',
+                                }}
+                              >
                                 {(pred.confidence * 100).toFixed(1)}%
                               </Text>
                             </Flex>
@@ -280,11 +282,7 @@ export default function ImageClassifier() {
                   </View>
                 </Flex>
 
-                <Button
-                  variant="secondary"
-                  onPress={handleClear}
-                  UNSAFE_style={{ width: '100%' }}
-                >
+                <Button variant="secondary" onPress={handleClear} UNSAFE_style={{ width: '100%' }}>
                   Clear & Upload New Image
                 </Button>
               </Flex>
@@ -292,16 +290,8 @@ export default function ImageClassifier() {
 
             {isClassifying && (
               <View padding="size-800">
-                <Flex
-                  direction="column"
-                  alignItems="center"
-                  gap="size-300"
-                >
-                  <ProgressCircle
-                    aria-label="Classifying"
-                    isIndeterminate
-                    size="L"
-                  />
+                <Flex direction="column" alignItems="center" gap="size-300">
+                  <ProgressCircle aria-label="Classifying" isIndeterminate size="L" />
                   <Text UNSAFE_style={{ fontWeight: 500, color: '#6e6e6e' }}>
                     Analyzing image...
                   </Text>

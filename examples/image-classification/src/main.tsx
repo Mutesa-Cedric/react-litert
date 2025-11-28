@@ -1,5 +1,5 @@
-import { defaultTheme, Provider } from '@adobe/react-spectrum';
 import App from './App';
+import { defaultTheme, Provider } from '@adobe/react-spectrum';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
