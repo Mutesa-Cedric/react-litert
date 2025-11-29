@@ -1,8 +1,8 @@
+import { imagenetClasses } from '../utils/imagenetClasses';
 import { Badge, Button, Flex, Heading, ProgressCircle, Text, View } from '@adobe/react-spectrum';
 import * as tf from '@tensorflow/tfjs-core';
 import { useState } from 'react';
 import { useLiteRtTfjsModel } from 'react-litert';
-import { imagenetClasses } from '../utils/imagenetClasses';
 
 interface Prediction {
   label: string;
@@ -104,7 +104,11 @@ export default function ImageClassifier() {
       <Flex direction="column" gap="size-300">
         <View padding="size-300" borderBottomWidth="thin" borderColor="gray-400">
           <Flex gap="size-200" wrap alignItems="center">
-            <Badge variant={status === 'ready' ? 'positive' : status === 'error' ? 'negative' : 'neutral'}>
+            <Badge
+              variant={
+                status === 'ready' ? 'positive' : status === 'error' ? 'negative' : 'neutral'
+              }
+            >
               {status.toUpperCase()}
             </Badge>
             {accelerator ? (
@@ -118,7 +122,13 @@ export default function ImageClassifier() {
         <View padding="size-300">
           <Flex direction="column" gap="size-400">
             {error && (
-              <View backgroundColor="negative" padding="size-300" borderRadius="medium" borderWidth="thin" borderColor="red-500">
+              <View
+                backgroundColor="negative"
+                padding="size-300"
+                borderRadius="medium"
+                borderWidth="thin"
+                borderColor="red-500"
+              >
                 <Text>
                   <strong>Error:</strong> {error.message}
                 </Text>
@@ -242,7 +252,12 @@ export default function ImageClassifier() {
                                 {(pred.confidence * 100).toFixed(1)}%
                               </Text>
                             </Flex>
-                            <View borderRadius="small" height="size-50" backgroundColor="gray-500" overflow="hidden">
+                            <View
+                              borderRadius="small"
+                              height="size-50"
+                              backgroundColor="gray-500"
+                              overflow="hidden"
+                            >
                               <View
                                 height="100%"
                                 width={`${pred.confidence * 100}%`}
