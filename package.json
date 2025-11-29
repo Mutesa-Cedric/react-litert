@@ -5,7 +5,8 @@
   "version": "0.1.2",
   "type": "module",
   "workspaces": [
-    "examples/*"
+    "examples/*",
+    "www"
   ],
   "author": "Cedric Mutesa <mutesacedric@gmail.com>",
   "engines": {
