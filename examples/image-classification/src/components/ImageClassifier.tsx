@@ -1,8 +1,8 @@
-import { imagenetClasses } from '../utils/imagenetClasses';
 import { Badge, Button, Flex, Heading, ProgressCircle, Text, View } from '@adobe/react-spectrum';
 import * as tf from '@tensorflow/tfjs-core';
 import { useState } from 'react';
 import { useLiteRtTfjsModel } from 'react-litert';
+import { imagenetClasses } from '../utils/imagenetClasses';
 
 interface Prediction {
   label: string;
@@ -100,31 +100,25 @@ export default function ImageClassifier() {
   const isReady = status === 'ready';
 
   return (
-    <View backgroundColor="static-white" borderRadius="medium">
+    <View backgroundColor="gray-75" borderRadius="medium" borderWidth="thin" borderColor="gray-400">
       <Flex direction="column" gap="size-300">
-        <View
-          padding="size-300"
-          UNSAFE_style={{
-            borderBottom: '1px solid #e1e1e1',
-          }}
-        >
-          <Flex gap="size-200" wrap>
-            <Badge variant={status === 'ready' ? 'positive' : 'neutral'}>
+        <View padding="size-300" borderBottomWidth="thin" borderColor="gray-400">
+          <Flex gap="size-200" wrap alignItems="center">
+            <Badge variant={status === 'ready' ? 'positive' : status === 'error' ? 'negative' : 'neutral'}>
               {status.toUpperCase()}
             </Badge>
-            {accelerator && <Badge variant="info">{accelerator.toUpperCase()}</Badge>}
+            {accelerator ? (
+              <Badge variant="info">{accelerator.toUpperCase()}</Badge>
+            ) : status === 'ready' ? (
+              <Badge variant="neutral">-</Badge>
+            ) : null}
           </Flex>
         </View>
 
         <View padding="size-300">
           <Flex direction="column" gap="size-400">
             {error && (
-              <View
-                backgroundColor="negative"
-                padding="size-300"
-                borderRadius="medium"
-                UNSAFE_style={{ border: '1px solid #d32f2f' }}
-              >
+              <View backgroundColor="negative" padding="size-300" borderRadius="medium" borderWidth="thin" borderColor="red-500">
                 <Text>
                   <strong>Error:</strong> {error.message}
                 </Text>
@@ -132,66 +126,69 @@ export default function ImageClassifier() {
             )}
 
             {!imageUrl && (
-              <View
-                borderRadius="medium"
-                padding="size-800"
-                UNSAFE_style={{
-                  border: '2px dashed #d1d1d1',
-                  backgroundColor: '#fafafa',
-                  cursor: isReady ? 'pointer' : 'not-allowed',
-                  transition: 'border-color 0.2s',
-                }}
-                UNSAFE_className="upload-zone"
+              <div
+                onClick={isReady ? () => document.getElementById('file-input')?.click() : undefined}
+                style={{ cursor: isReady ? 'pointer' : 'not-allowed' }}
               >
-                <Flex direction="column" alignItems="center" gap="size-300">
-                  <View
-                    UNSAFE_style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: '50%',
-                      backgroundColor: '#f0f0f0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '28px',
-                      color: '#666',
-                    }}
-                  >
-                    <svg
-                      width="32"
-                      height="32"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
+                <View
+                  borderRadius="medium"
+                  padding="size-800"
+                  borderWidth="thick"
+                  borderColor="gray-500"
+                  backgroundColor="gray-300"
+                  UNSAFE_style={{
+                    borderStyle: 'dashed',
+                    opacity: isReady ? 1 : 0.6,
+                  }}
+                >
+                  <Flex direction="column" alignItems="center" gap="size-300">
+                    <View
+                      width="size-600"
+                      height="size-600"
+                      backgroundColor="gray-500"
+                      UNSAFE_style={{
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
                     >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                  </View>
-                  <Heading level={3} UNSAFE_style={{ margin: 0, fontWeight: 600 }}>
-                    Upload Image
-                  </Heading>
-                  <Text UNSAFE_style={{ color: '#6e6e6e' }}>Click to select or drag and drop</Text>
-                  <Button
-                    variant="cta"
-                    onPress={() => document.getElementById('file-input')?.click()}
-                    isDisabled={!isReady}
-                    UNSAFE_style={{ marginTop: '8px' }}
-                  >
-                    Select File
-                  </Button>
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                    style={{ display: 'none' }}
-                    disabled={!isReady}
-                  />
-                </Flex>
-              </View>
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                    </View>
+                    <Heading level={3} marginTop="size-0">
+                      Upload Image
+                    </Heading>
+                    <Text>Click to select or drag and drop</Text>
+                    <Button
+                      variant="cta"
+                      onPress={() => document.getElementById('file-input')?.click()}
+                      isDisabled={!isReady}
+                      marginTop="size-100"
+                    >
+                      Select File
+                    </Button>
+                    <input
+                      id="file-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      style={{ display: 'none' }}
+                      disabled={!isReady}
+                    />
+                  </Flex>
+                </View>
+              </div>
             )}
 
             {imageUrl && !isClassifying && predictions.length > 0 && (
@@ -202,9 +199,9 @@ export default function ImageClassifier() {
                     minWidth="300px"
                     borderRadius="medium"
                     overflow="hidden"
-                    UNSAFE_style={{
-                      border: '1px solid #e1e1e1',
-                    }}
+                    borderWidth="thin"
+                    borderColor="gray-500"
+                    backgroundColor="gray-300"
                   >
                     <img
                       src={imageUrl}
@@ -214,7 +211,6 @@ export default function ImageClassifier() {
                         display: 'block',
                         maxHeight: '500px',
                         objectFit: 'contain',
-                        background: '#fafafa',
                       }}
                     />
                   </View>
@@ -222,55 +218,36 @@ export default function ImageClassifier() {
                   <View
                     flex="1"
                     minWidth="300px"
-                    backgroundColor="gray-100"
+                    backgroundColor="gray-200"
                     borderRadius="medium"
                     padding="size-300"
                   >
                     <Flex direction="column" gap="size-200">
-                      <Heading
-                        level={4}
-                        UNSAFE_style={{ margin: 0, fontWeight: 600, fontSize: '1rem' }}
-                      >
+                      <Heading level={4} marginTop="size-0">
                         Results
                       </Heading>
                       {predictions.map((pred, idx) => (
                         <View
                           key={idx}
-                          backgroundColor="static-white"
+                          backgroundColor="gray-300"
                           borderRadius="small"
                           padding="size-200"
-                          UNSAFE_style={{
-                            border: '1px solid #e1e1e1',
-                          }}
+                          borderWidth="thin"
+                          borderColor="gray-500"
                         >
                           <Flex direction="column" gap="size-100">
                             <Flex justifyContent="space-between" alignItems="center">
-                              <Text UNSAFE_style={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                                {pred.label}
-                              </Text>
-                              <Text
-                                UNSAFE_style={{
-                                  fontWeight: 600,
-                                  fontSize: '0.875rem',
-                                  color: idx === 0 ? '#0d66d0' : '#6e6e6e',
-                                }}
-                              >
+                              <Text>{pred.label}</Text>
+                              <Text UNSAFE_style={{ fontWeight: 600 }}>
                                 {(pred.confidence * 100).toFixed(1)}%
                               </Text>
                             </Flex>
-                            <View
-                              borderRadius="small"
-                              UNSAFE_style={{
-                                height: '4px',
-                                background: '#e1e1e1',
-                                overflow: 'hidden',
-                              }}
-                            >
+                            <View borderRadius="small" height="size-50" backgroundColor="gray-500" overflow="hidden">
                               <View
+                                height="100%"
+                                width={`${pred.confidence * 100}%`}
+                                backgroundColor={idx === 0 ? 'blue-500' : 'gray-600'}
                                 UNSAFE_style={{
-                                  height: '100%',
-                                  width: `${pred.confidence * 100}%`,
-                                  background: idx === 0 ? '#0d66d0' : '#6e6e6e',
                                   transition: 'width 0.5s ease',
                                 }}
                               />
@@ -292,21 +269,13 @@ export default function ImageClassifier() {
               <View padding="size-800">
                 <Flex direction="column" alignItems="center" gap="size-300">
                   <ProgressCircle aria-label="Classifying" isIndeterminate size="L" />
-                  <Text UNSAFE_style={{ fontWeight: 500, color: '#6e6e6e' }}>
-                    Analyzing image...
-                  </Text>
+                  <Text>Analyzing image...</Text>
                 </Flex>
               </View>
             )}
           </Flex>
         </View>
       </Flex>
-
-      <style>{`
-        .upload-zone:hover {
-          border-color: #0d66d0;
-        }
-      `}</style>
     </View>
   );
 }
