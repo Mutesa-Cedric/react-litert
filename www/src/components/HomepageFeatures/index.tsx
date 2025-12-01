@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+import styles from './styles.module.css';
 import Heading from '@theme/Heading';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
-import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
@@ -36,8 +36,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Works seamlessly with TensorFlow.js tensors. Input and output are tf.Tensors, making it
-        easy to integrate with existing ML workflows.
+        Works seamlessly with TensorFlow.js tensors. Input and output are tf.Tensors, making it easy
+        to integrate with existing ML workflows.
       </>
     ),
   },

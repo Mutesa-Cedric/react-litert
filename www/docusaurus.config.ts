@@ -43,8 +43,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/Mutesa-Cedric/react-litert/tree/main/www/',
+          editUrl: 'https://github.com/Mutesa-Cedric/react-litert/tree/main/www/',
         },
         blog: false,
         theme: {

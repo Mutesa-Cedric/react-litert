@@ -20,7 +20,10 @@ function HomepageHeader() {
           <Link className="button button--secondary button--lg" to="/docs/getting-started">
             Get Started →
           </Link>
-          <Link className="button button--outline button--secondary button--lg" to="/docs/api-reference/litert-provider">
+          <Link
+            className="button button--outline button--secondary button--lg"
+            to="/docs/api-reference/litert-provider"
+          >
             API Reference
           </Link>
         </div>
