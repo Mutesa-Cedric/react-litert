@@ -1,6 +1,6 @@
 {
   "name": "react-litert",
-  "description": "React integration for Google's LiteRT.js",
+  "description": "A React library for running on-device AI with Google’s LiteRT runtime",
   "packageManager": "yarn@4.11.0",
   "version": "0.1.2",
   "type": "module",

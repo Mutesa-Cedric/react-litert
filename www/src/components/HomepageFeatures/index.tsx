@@ -1,6 +1,7 @@
-import type {ReactNode} from 'react';
-import clsx from 'clsx';
+/* eslint-disable @typescript-eslint/no-require-imports */
 import Heading from '@theme/Heading';
+import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import styles from './styles.module.css';
 
 type FeatureItem = {
@@ -11,38 +12,38 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
-  },
-  {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by React',
+    title: 'React-Friendly API',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Simple hooks for loading and running models. No complex setup required. Just wrap your app
+        with <code>LiteRtProvider</code> and start using models.
+      </>
+    ),
+  },
+  {
+    title: 'Automatic Acceleration',
+    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    description: (
+      <>
+        Automatically selects the best accelerator available. WebGPU for maximum performance, with
+        seamless fallback to WASM when needed.
+      </>
+    ),
+  },
+  {
+    title: 'TensorFlow.js Integration',
+    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    description: (
+      <>
+        Works seamlessly with TensorFlow.js tensors. Input and output are tf.Tensors, making it
+        easy to integrate with existing ML workflows.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, Svg, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
