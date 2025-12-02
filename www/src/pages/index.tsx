@@ -22,7 +22,7 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--outline button--secondary button--lg"
-            to="/docs/api-reference/litert-provider"
+            to="/docs/api-reference"
           >
             API Reference
           </Link>

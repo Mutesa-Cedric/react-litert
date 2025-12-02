@@ -20,6 +20,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'API Reference',
+      link: {
+        type: 'doc',
+        id: 'api-reference',
+      },
       items: [
         'api-reference/litert-provider',
         'api-reference/use-litert-tfjs-model',

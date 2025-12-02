@@ -6,7 +6,7 @@ export type {
   LiteRtTensorInfo,
   UseLiteRtRuntimeResult,
   UseLiteRtTfjsModelOptions,
-  UseLiteRtTfjsModelResult
+  UseLiteRtTfjsModelResult,
 } from './types/public';
 
 export { useLiteRtRuntime } from './hooks/useLiteRtRuntime';
