@@ -25,9 +25,18 @@ export default {
         /*
          * tf backend initialization, we will also ship tf backends for both backend-cpu and backend-gpu
          * we must ensure that at least CPU backend is available for tf operations
+         * we are dynamically importing the backends to avoid forcing Vite users to configure optimizeDeps for side-effects
          */
         try {
           const tf = await import('@tensorflow/tfjs-core');
+
+          await Promise.all([
+            import('@tensorflow/tfjs-backend-cpu'),
+            import('@tensorflow/tfjs-backend-webgpu').catch(() => {
+              // WebGPU might not be available in all environments
+              // console.debug('[LiteRT] WebGPU backend not available');
+            }),
+          ]);
 
           if (config.tfBackend) {
             // Try to set requested backend - if it fails, we fallback to CPU

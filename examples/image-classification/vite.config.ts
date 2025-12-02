@@ -6,12 +6,6 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  optimizeDeps: {
-    include: ['@tensorflow/tfjs-core', 'long'],
-    esbuildOptions: {
-      target: 'esnext',
-    },
-  },
   build: {
     commonjsOptions: {
       include: [/node_modules/],
