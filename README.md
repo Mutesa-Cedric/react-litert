@@ -1,10 +1,6 @@
 # react-litert
 
-**React integration for Google’s LiteRT.js.**
-
-A small API for loading and running `.tflite` models in React using WebGPU or WASM, with tf.Tensor input/output.
-
----
+**A React library for running on-device AI with Google’s LiteRT runtime**
 
 ## Features
 
