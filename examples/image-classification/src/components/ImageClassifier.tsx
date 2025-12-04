@@ -2,7 +2,7 @@ import { imagenetClasses } from '../utils/imagenetClasses';
 import { Badge, Button, Flex, Heading, ProgressCircle, Text, View } from '@adobe/react-spectrum';
 import * as tf from '@tensorflow/tfjs-core';
 import { useState } from 'react';
-import { useLiteRtTfjsModel } from 'react-litert';
+import { useModel } from 'react-litert';
 
 interface Prediction {
   label: string;
@@ -10,9 +10,10 @@ interface Prediction {
 }
 
 export default function ImageClassifier() {
-  const { status, run, error, accelerator } = useLiteRtTfjsModel({
+  const { status, run, error, accelerator } = useModel({
     modelUrl: '/models/mobilenet_v2_1.0_224.tflite',
     id: 'mobilenet-v2',
+    runtime: 'tfjs',
   });
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);

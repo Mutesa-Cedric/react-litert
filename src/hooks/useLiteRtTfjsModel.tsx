@@ -9,6 +9,9 @@ import { runWithTfjsTensors } from '@litertjs/tfjs-interop';
 import type * as tf from '@tensorflow/tfjs-core';
 import { useCallback } from 'react';
 
+/**
+ * @deprecated Use `useModel()` instead. This hook will be removed in a v1.0.0.
+ */
 export function useLiteRtTfjsModel<In = TfjsInput, Out = TfjsOutput>(
   options: UseLiteRtTfjsModelOptions
 ): UseLiteRtTfjsModelResult<In, Out> {

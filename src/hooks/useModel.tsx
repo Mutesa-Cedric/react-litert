@@ -1,22 +1,21 @@
 import { getCachedModel, setCachedModel } from '../internal/modelCache';
 import type {
   Accelerator,
-  LiteRtInput,
   LiteRtModelStatus,
-  LiteRtOutput,
-  UseLiteRtModelOptions,
-  UseLiteRtModelResult,
+  ModelInput,
+  ModelOutput,
+  UseModelOptions,
+  UseModelResult,
 } from '../types/public';
 import { useLiteRtRuntime } from './useLiteRtRuntime';
-import { loadAndCompile, type CompiledModel, type Tensor } from '@litertjs/core';
-import { useEffect, useState } from 'react';
+import { loadAndCompile, Tensor, type CompiledModel } from '@litertjs/core';
+import { runWithTfjsTensors } from '@litertjs/tfjs-interop';
+import type * as tf from '@tensorflow/tfjs-core';
+import { useCallback, useEffect, useState } from 'react';
 
-/**
- * @deprecated Use `useModel()` instead. This hook will be removed in a v1.0.0.
- */
-export function useLiteRtModel<In = LiteRtInput, Out = LiteRtOutput>(
-  options: UseLiteRtModelOptions
-): UseLiteRtModelResult<In, Out> {
+export function useModel<In = ModelInput, Out = ModelOutput>(
+  options: UseModelOptions
+): UseModelResult<In, Out> {
   const runtime = useLiteRtRuntime();
 
   const [status, setStatus] = useState<LiteRtModelStatus>('idle');
@@ -78,12 +77,38 @@ export function useLiteRtModel<In = LiteRtInput, Out = LiteRtOutput>(
       : (model.run(input as Tensor | Tensor[]) as Out);
   };
 
+  const runWithTfjs = useCallback(
+    async (input: In, signature?: string): Promise<Out> => {
+      if (status !== 'ready' || !model) {
+        throw new Error('LiteRT model is not ready yet');
+      }
+
+      if (signature) {
+        // multi-signature model
+        return runWithTfjsTensors(
+          model,
+          signature,
+          input as tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>
+        ) as unknown as Promise<Out>;
+      }
+
+      // default signature
+      return runWithTfjsTensors(
+        model,
+        input as tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>
+      ) as unknown as Promise<Out>;
+    },
+    [status, model]
+  );
+
+  // will be running with tfjs unless specified otherwise
+  const run = options.runtime === 'litert' ? runRaw : runWithTfjs;
+
   return {
-    status,
-    model,
-    error,
-    accelerator,
-    runRaw,
+    status: status,
+    error: error,
+    accelerator: accelerator,
+    run,
     inputDetails:
       model?.getInputDetails()?.map((detail) => ({
         name: detail.name,
