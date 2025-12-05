@@ -4,15 +4,15 @@ sidebar_position: 1
 
 # Getting Started
 
-**react-litert** is a React integration for Google's LiteRT.js, providing a simple API for loading and running `.tflite` models in React applications using WebGPU or WASM with TensorFlow.js tensors.
+**react-litert** is a React library for running on-device AI with Google's LiteRT runtime. Run TensorFlow Lite models directly in the browser with WebGPU or WASM acceleration.
 
 ## What is react-litert?
 
 react-litert makes it easy to run TensorFlow Lite models in your React applications. It provides:
 
-- **React-friendly model loading** - Simple hooks for loading and using models
+- **Unified `useModel` hook** - Single hook for all model loading
 - **Automatic accelerator selection** - WebGPU → WASM fallback
-- **tf.Tensor integration** - Works seamlessly with TensorFlow.js
+- **Flexible runtime options** - Works with TensorFlow.js or raw LiteRT tensors
 - **Global runtime initialization** - Configure once with `<LiteRtProvider>`
 - **Built-in model caching** - Avoids re-compilation of models
 
@@ -21,8 +21,8 @@ react-litert makes it easy to run TensorFlow Lite models in your React applicati
 Here's a minimal example to get you started:
 
 ```tsx
-import { LiteRtProvider, useLiteRtTfjsModel } from 'react-litert';
 import * as tf from '@tensorflow/tfjs-core';
+import { LiteRtProvider, useModel } from 'react-litert';
 
 function App() {
   return (
@@ -38,8 +38,9 @@ function App() {
 }
 
 function ImageClassifier() {
-  const { status, run } = useLiteRtTfjsModel({
+  const { status, run } = useModel({
     modelUrl: '/models/mobilenet_v2.tflite',
+    runtime: 'tfjs', // Use 'tfjs' for TensorFlow.js tensors
   });
 
   async function classify(image: tf.Tensor4D) {
@@ -59,13 +60,17 @@ function ImageClassifier() {
 
 Wrap your application with `<LiteRtProvider>` to configure the LiteRT runtime globally. This sets up WebGPU/WASM support and TensorFlow.js backends.
 
-### 2. Model Hooks
+### 2. The `useModel` Hook
 
-Use `useLiteRtTfjsModel` to load and run models with TensorFlow.js tensors, or `useLiteRtModel` for raw LiteRT tensors (no TensorFlow.js dependency).
+Use the unified `useModel` hook to load and run models:
+
+- `runtime: 'tfjs'` - Works with TensorFlow.js tensors (default)
+- `runtime: 'litert'` - Works with raw LiteRT tensors (no TensorFlow.js)
 
 ### 3. Model Status
 
 Models go through several states:
+
 - `idle` - Not started
 - `initializing-runtime` - Setting up WebGPU/WASM
 - `compiling` - Compiling the model
@@ -77,4 +82,3 @@ Models go through several states:
 - [Installation](./installation) - Install react-litert and its dependencies
 - [Basic Usage](./basic-usage) - Learn how to use the hooks
 - [API Reference](./api-reference/litert-provider) - Detailed API documentation
-

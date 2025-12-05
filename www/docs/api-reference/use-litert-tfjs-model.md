@@ -4,6 +4,21 @@ sidebar_position: 2
 
 # useLiteRtTfjsModel
 
+:::danger DEPRECATED
+This hook is deprecated and will be removed in v1.0.0. Please use [`useModel`](./use-model) with `runtime: 'tfjs'` instead.
+
+**Migration:**
+
+```tsx
+// Before
+const { run } = useLiteRtTfjsModel({ modelUrl: '/model.tflite' });
+
+// After
+const { run } = useModel({ modelUrl: '/model.tflite', runtime: 'tfjs' });
+```
+
+:::
+
 Hook for loading and running `.tflite` models with TensorFlow.js tensors.
 
 ## Import
@@ -15,14 +30,13 @@ import { useLiteRtTfjsModel } from 'react-litert';
 ## Usage
 
 ```tsx
-import { useLiteRtTfjsModel } from 'react-litert';
 import * as tf from '@tensorflow/tfjs-core';
+import { useLiteRtTfjsModel } from 'react-litert';
 
 function MyComponent() {
-  const { status, run, error, accelerator, inputDetails, outputDetails } =
-    useLiteRtTfjsModel({
-      modelUrl: '/models/my_model.tflite',
-    });
+  const { status, run, error, accelerator, inputDetails, outputDetails } = useLiteRtTfjsModel({
+    modelUrl: '/models/my_model.tflite',
+  });
 
   // Use the model...
 }
@@ -37,7 +51,7 @@ function MyComponent() {
 ```tsx
 useLiteRtTfjsModel({
   modelUrl: '/models/mobilenet_v2.tflite',
-})
+});
 ```
 
 ### `id?: string`
@@ -48,7 +62,7 @@ Optional cache key for the model. If not provided, the `modelUrl` is used as the
 useLiteRtTfjsModel({
   modelUrl: '/models/my_model.tflite',
   id: 'my-custom-key', // Use this for caching
-})
+});
 ```
 
 ### `acceleratorPreference?: ("webgpu" | "wasm")[]`
@@ -59,7 +73,7 @@ Override the global accelerator preference for this specific model.
 useLiteRtTfjsModel({
   modelUrl: '/models/my_model.tflite',
   acceleratorPreference: ['wasm'], // Force WASM for this model
-})
+});
 ```
 
 ### `lazy?: boolean`
@@ -72,7 +86,7 @@ If `true`, the model won't be loaded until `run()` is called for the first time.
 useLiteRtTfjsModel({
   modelUrl: '/models/my_model.tflite',
   lazy: true, // Load on-demand
-})
+});
 ```
 
 ### `inputStyle?: "single" | "array" | "named"`
@@ -90,6 +104,7 @@ How to interpret the input when calling `run()`. This affects the type signature
 ### `status: LiteRtModelStatus`
 
 Current status of the model:
+
 - `"idle"` - Model loading hasn't started
 - `"initializing-runtime"` - Setting up WebGPU/WASM runtime
 - `"compiling"` - Compiling the model
@@ -109,6 +124,7 @@ The accelerator being used by the model. `null` if not yet determined.
 Function to run inference on the model.
 
 **Parameters:**
+
 - `input` - Input tensor(s). Type depends on `inputStyle`:
   - Single tensor: `tf.Tensor`
   - Array: `tf.Tensor[]`
@@ -142,6 +158,7 @@ const output = await run(inputTensor, 'my_signature');
 Array of input tensor information. `null` until model is loaded.
 
 Each `LiteRtTensorInfo` contains:
+
 - `name: string` - Tensor name
 - `index: number` - Tensor index
 - `shape: number[]` - Tensor shape
@@ -154,14 +171,13 @@ Array of output tensor information. `null` until model is loaded.
 ## Complete Example
 
 ```tsx
-import { useLiteRtTfjsModel } from 'react-litert';
 import * as tf from '@tensorflow/tfjs-core';
+import { useLiteRtTfjsModel } from 'react-litert';
 
 function ImageClassifier() {
-  const { status, run, error, accelerator, inputDetails, outputDetails } =
-    useLiteRtTfjsModel({
-      modelUrl: '/models/mobilenet_v2.tflite',
-    });
+  const { status, run, error, accelerator, inputDetails, outputDetails } = useLiteRtTfjsModel({
+    modelUrl: '/models/mobilenet_v2.tflite',
+  });
 
   async function classify(image: tf.Tensor4D) {
     if (status !== 'ready') {
@@ -184,15 +200,10 @@ function ImageClassifier() {
   return (
     <div>
       <p>Model ready! Using {accelerator}</p>
-      {inputDetails && (
-        <p>Input shape: {inputDetails[0].shape.join('x')}</p>
-      )}
-      {outputDetails && (
-        <p>Output shape: {outputDetails[0].shape.join('x')}</p>
-      )}
+      {inputDetails && <p>Input shape: {inputDetails[0].shape.join('x')}</p>}
+      {outputDetails && <p>Output shape: {outputDetails[0].shape.join('x')}</p>}
       {/* Your UI here */}
     </div>
   );
 }
 ```
-

@@ -1,14 +1,14 @@
 # react-litert
 
-**A React library for running on-device AI with Google’s LiteRT runtime**
+**A React library for running on-device AI with Google's LiteRT runtime**
 
 ## Features
 
-- React-friendly model loading
+- Unified `useModel` hook for all model loading
 - Automatic accelerator selection (WebGPU → WASM fallback)
-- tf.Tensor in → tf.Tensor out
+- Support for both TensorFlow.js and raw LiteRT tensors
 - Global runtime initialization via `<LiteRtProvider>`
-- Built-in model caching to avoid re-compilation
+- Built-in model caching
 
 ---
 
@@ -18,9 +18,9 @@
 npm install react-litert
 ```
 
-## Usage
+## Quick Start
 
-### 1. wrap your application in `<LiteRtProvider>`
+### 1. Wrap your application in `<LiteRtProvider>`
 
 ```tsx
 import { LiteRtProvider } from 'react-litert';
@@ -40,20 +40,21 @@ export function App() {
 }
 ```
 
-### 2. Use a model
+### 2. Use the `useModel` hook
 
 ```tsx
-import * as tf from '@tensorflow/tfjs-core'; // optional, if you want types
-import { useLiteRtTfjsModel } from 'react-litert';
+import * as tf from '@tensorflow/tfjs-core';
+import { useModel } from 'react-litert';
 
 export function Main() {
-  const { status, run, error } = useLiteRtTfjsModel({
+  const { status, run, error } = useModel({
     modelUrl: '/models/mobilenet_v2.tflite',
+    runtime: 'tfjs', // Use 'tfjs' for TensorFlow.js tensors
   });
 
-  async function predict(t: tf.Tensor4D) {
-    const out = await run(t);
-    console.log(out);
+  async function predict(input: tf.Tensor4D) {
+    const output = await run(input);
+    console.log(output);
   }
 
   if (status !== 'ready') return <p>Status: {status}</p>;
@@ -63,78 +64,97 @@ export function Main() {
 }
 ```
 
-## API
+## API Reference
 
-`<LiteRtProvider config>`
+### `<LiteRtProvider>`
 
-### Config fields:
+Initializes the LiteRT runtime globally.
 
-```ts
-wasmRoot?: string
-preferAccelerators?: ("webgpu" | "wasm")[]
-tfBackend?: "webgpu" | "wasm" | "cpu"
-autoShareWebGpuWithTfjs?: boolean
-onRuntimeError?: (error: Error) => void
-```
-
-### useLiteRtTfjsModel(options)
-
-Loads a .tflite and returns a run() method that works with tf.Tensors.
-
-#### Options:
+**Config options:**
 
 ```ts
-modelUrl: string
-id?: string (cache key)
-acceleratorPreference?: ("webgpu" | "wasm")[]
-lazy?: boolean
+{
+  wasmRoot?: string;                      // Path to WASM files
+  preferAccelerators?: ('webgpu' | 'wasm')[]; // Accelerator preference order
+  tfBackend?: 'webgpu' | 'wasm' | 'cpu';  // TensorFlow.js backend
+  autoShareWebGpuWithTfjs?: boolean;      // Share WebGPU device (default: true)
+  onRuntimeError?: (error: Error) => void;
+}
 ```
 
-#### Returns:
+### `useModel(options)`
+
+The primary hook for loading and running models.
+
+**Options:**
 
 ```ts
-status;
-error;
-accelerator;
-run(input);
-inputDetails;
-outputDetails;
+{
+  modelUrl: string;                      // Path to .tflite model
+  runtime: 'tfjs' | 'litert';           // Runtime selection (default: 'tfjs')
+  id?: string;                          // Cache key
+  acceleratorPreference?: ('webgpu' | 'wasm')[];
+  lazy?: boolean;
+}
 ```
 
-## Advanced usage (Raw LiteRT Tensors)
+**Returns:**
 
-For users who want **no tfjs** and full control:
+```ts
+{
+  status: LiteRtModelStatus;            // 'idle' | 'compiling' | 'ready' | 'error'
+  error: Error | null;
+  accelerator: 'webgpu' | 'wasm' | null;
+  run: (input, signature?) => Promise<output>;
+  inputDetails: LiteRtTensorInfo[] | null;
+  outputDetails: LiteRtTensorInfo[] | null;
+}
+```
+
+**Examples:**
+
+```tsx
+// With TensorFlow.js
+const { run } = useModel({
+  modelUrl: '/model.tflite',
+  runtime: 'tfjs',
+});
+
+// With raw LiteRT tensors
+const { run } = useModel({
+  modelUrl: '/model.tflite',
+  runtime: 'litert',
+});
+```
+
+## Advanced Usage (Raw LiteRT Tensors)
+
+For users who want **no TensorFlow.js** and full control over LiteRT tensors:
 
 ```tsx
 import { createTensor } from '@litertjs/core';
-import { useLiteRtModel } from 'react-litert/core';
+import { useModel } from 'react-litert';
 
 export function RawExample() {
-  const { status, runRaw } = useLiteRtModel({
+  const { status, run } = useModel({
     modelUrl: '/models/linear.tflite',
+    runtime: 'litert', // Use raw LiteRT tensors
   });
 
-  async function go() {
+  async function predict() {
     // Create LiteRT tensor manually
     const input = createTensor('float32', [1], new Float32Array([5]));
 
     // Run inference with raw LiteRT tensors
-    const out = await runRaw(input);
-
-    console.log(out);
+    const output = await run(input);
+    console.log(output);
   }
 
-  if (status === 'ready') go();
-  return <p>Raw model status: {status}</p>;
+  if (status === 'ready') predict();
+  return <p>Model status: {status}</p>;
 }
-```
-
-you can use this hook from `react-litert/core`
-
-```ts
-import { useLiteRtModel } from 'react-litert/core';
 ```
 
 ## Licence
 
-MIT
+[MIT](./LICENSE)

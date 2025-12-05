@@ -26,9 +26,10 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'api-reference/litert-provider',
+        'api-reference/use-model',
+        'api-reference/use-litert-runtime',
         'api-reference/use-litert-tfjs-model',
         'api-reference/use-litert-model',
-        'api-reference/use-litert-runtime',
       ],
     },
     'advanced-usage',

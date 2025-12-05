@@ -4,6 +4,21 @@ sidebar_position: 3
 
 # useLiteRtModel
 
+:::danger DEPRECATED
+This hook is deprecated and will be removed in v1.0.0. Please use [`useModel`](./use-model) with `runtime: 'litert'` instead.
+
+**Migration:**
+
+```tsx
+// Before
+const { runRaw } = useLiteRtModel({ modelUrl: '/model.tflite' });
+
+// After
+const { run } = useModel({ modelUrl: '/model.tflite', runtime: 'litert' });
+```
+
+:::
+
 Hook for loading and running `.tflite` models with raw LiteRT tensors (no TensorFlow.js dependency).
 
 ## Import
@@ -15,8 +30,8 @@ import { useLiteRtModel } from 'react-litert/core';
 ## Usage
 
 ```tsx
-import { useLiteRtModel } from 'react-litert/core';
 import { createTensor } from '@litertjs/core';
+import { useLiteRtModel } from 'react-litert/core';
 
 function MyComponent() {
   const { status, runRaw, error, accelerator } = useLiteRtModel({
@@ -34,6 +49,7 @@ function MyComponent() {
 ## When to Use
 
 Use `useLiteRtModel` when you:
+
 - Don't want to include TensorFlow.js in your bundle
 - Need full control over tensor creation and manipulation
 - Want to work directly with LiteRT's tensor API
@@ -70,6 +86,7 @@ The underlying LiteRT compiled model. `null` until model is ready.
 Function to run inference with raw LiteRT tensors.
 
 **Parameters:**
+
 - `input` - LiteRT tensor(s):
   - Single tensor: `Tensor`
   - Array: `Tensor[]`
@@ -109,8 +126,8 @@ Same as `useLiteRtTfjsModel`.
 ## Complete Example
 
 ```tsx
-import { useLiteRtModel } from 'react-litert/core';
 import { createTensor } from '@litertjs/core';
+import { useLiteRtModel } from 'react-litert/core';
 
 function RawModelExample() {
   const { status, runRaw, error } = useLiteRtModel({
@@ -123,11 +140,7 @@ function RawModelExample() {
     }
 
     // Create input tensor manually
-    const input = createTensor(
-      'float32',
-      [1],
-      new Float32Array([5.0])
-    );
+    const input = createTensor('float32', [1], new Float32Array([5.0]));
 
     // Run inference
     const output = await runRaw(input);
@@ -145,11 +158,7 @@ function RawModelExample() {
     return <div>Loading...</div>;
   }
 
-  return (
-    <button onClick={runInference}>
-      Run Inference
-    </button>
-  );
+  return <button onClick={runInference}>Run Inference</button>;
 }
 ```
 
@@ -172,4 +181,3 @@ console.log(tensor.shape);   // [1, 224, 224, 3]
 console.log(tensor.dtype);   // 'float32'
 console.log(tensor.data());  // Float32Array
 ```
-

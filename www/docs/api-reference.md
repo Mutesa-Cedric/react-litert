@@ -11,7 +11,8 @@ Complete API documentation for **react-litert**. This section provides detailed 
 react-litert provides a simple, React-friendly API for running TensorFlow Lite models in the browser. The library consists of:
 
 - **1 Provider Component** - `<LiteRtProvider>` for global configuration
-- **3 Hooks** - For loading models and accessing runtime information
+- **1 Primary Hook** - `useModel` for loading and running models
+- **1 Runtime Hook** - `useLiteRtRuntime` for runtime information
 - **Multiple Configuration Options** - To customize runtime behavior
 
 ## Provider Component
@@ -32,41 +33,24 @@ The root provider component that initializes the LiteRT runtime and makes it ava
 
 ## Model Hooks
 
-### `useLiteRtTfjsModel`
+### `useModel`
 
-**Recommended hook for most use cases.** Load and run `.tflite` models with TensorFlow.js tensor support.
+**The primary hook for loading and running models.** Supports both TensorFlow.js and raw LiteRT tensors with automatic type inference.
 
 ```tsx
-const { status, run, error } = useLiteRtTfjsModel({
+const { status, run, error } = useModel({
   modelUrl: '/models/mobilenet_v2.tflite',
-});
-```
-
-**When to use:** 
-- You're already using TensorFlow.js in your project
-- You want the convenience of `tf.Tensor` objects
-- You need image preprocessing with `tf.browser.fromPixels()`
-
-**[Read full documentation →](api-reference/use-litert-tfjs-model)**
-
----
-
-### `useLiteRtModel`
-
-Lower-level hook for running models with raw LiteRT tensors (no TensorFlow.js dependency).
-
-```tsx
-const { status, runRaw, model } = useLiteRtModel({
-  modelUrl: '/models/my_model.tflite',
+  runtime: 'tfjs', // or 'litert'
 });
 ```
 
 **When to use:**
-- You want to minimize bundle size (no TensorFlow.js)
-- You need direct access to LiteRT's tensor API
-- You're building a lightweight application
 
-**[Read full documentation →](api-reference/use-litert-model)**
+- For all model loading (replaces `useLiteRtTfjsModel` and `useLiteRtModel`)
+- Use `runtime: 'tfjs'` for TensorFlow.js tensors
+- Use `runtime: 'litert'` for raw LiteRT tensors
+
+**[Read full documentation →](api-reference/use-model)**
 
 ---
 
@@ -79,23 +63,42 @@ const { status, supportsWebGpu, supportsWasm } = useLiteRtRuntime();
 ```
 
 **When to use:**
+
 - Display runtime capabilities to users
 - Conditionally render based on available accelerators
 - Debug runtime initialization issues
 
 **[Read full documentation →](api-reference/use-litert-runtime)**
 
+---
+
+## Deprecated Hooks
+
+The following hooks are deprecated and will be removed in v1.0.0. Please migrate to `useModel`.
+
+### `useLiteRtTfjsModel` (deprecated)
+
+Replaced by `useModel({ runtime: 'tfjs' })`.
+
+**[Migration guide →](api-reference/use-litert-tfjs-model)**
+
+### `useLiteRtModel` (deprecated)
+
+Replaced by `useModel({ runtime: 'litert' })`.
+
+**[Migration guide →](api-reference/use-litert-model)**
+
 ## Common Types
 
 ### `LiteRtModelStatus`
 
 ```typescript
-type LiteRtModelStatus = 
-  | "idle"                  // Not started
-  | "initializing-runtime"  // Setting up WebGPU/WASM
-  | "compiling"             // Compiling the model
-  | "ready"                 // Ready to use
-  | "error";                // Error occurred
+type LiteRtModelStatus =
+  | 'idle' // Not started
+  | 'initializing-runtime' // Setting up WebGPU/WASM
+  | 'compiling' // Compiling the model
+  | 'ready' // Ready to use
+  | 'error'; // Error occurred
 ```
 
 ### `LiteRtConfig`
@@ -103,8 +106,8 @@ type LiteRtModelStatus =
 ```typescript
 interface LiteRtConfig {
   wasmRoot?: string;
-  preferAccelerators?: ("webgpu" | "wasm")[];
-  tfBackend?: "webgpu" | "wasm" | "cpu";
+  preferAccelerators?: ('webgpu' | 'wasm')[];
+  tfBackend?: 'webgpu' | 'wasm' | 'cpu';
   autoShareWebGpuWithTfjs?: boolean;
   onRuntimeError?: (error: Error) => void;
 }
@@ -117,17 +120,16 @@ interface LiteRtTensorInfo {
   name: string;
   index: number;
   shape: number[];
-  dtype: "float32" | "int32";
+  dtype: 'float32' | 'int32';
 }
 ```
 
 ## Quick Reference
 
-| API | Purpose | Import From |
-|-----|---------|-------------|
-| `<LiteRtProvider>` | Configure runtime | `react-litert` |
-| `useLiteRtTfjsModel` | Load model with tf.Tensor | `react-litert` |
-| `useLiteRtModel` | Load model with raw tensors | `react-litert/core` |
+| API                | Purpose              | Import From    |
+| ------------------ | -------------------- | -------------- |
+| `<LiteRtProvider>` | Configure runtime    | `react-litert` |
+| `useModel`         | Load and run models  | `react-litert` |
 | `useLiteRtRuntime` | Check runtime status | `react-litert` |
 
 ## Related Documentation
@@ -137,4 +139,3 @@ interface LiteRtTensorInfo {
 - [Basic Usage](basic-usage) - Common usage patterns
 - [Advanced Usage](advanced-usage) - Advanced techniques
 - [Examples](examples) - Complete example applications
-

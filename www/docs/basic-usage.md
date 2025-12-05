@@ -36,26 +36,37 @@ function App() {
 - `autoShareWebGpuWithTfjs` - Share WebGPU device with TensorFlow.js (default: `true`)
 - `onRuntimeError` - Error handler callback (optional)
 
-## Using a Model with TensorFlow.js
+## Using the `useModel` Hook
 
-The easiest way to use models is with `useLiteRtTfjsModel`, which works with TensorFlow.js tensors:
+The `useModel` hook is the primary way to load and run models.
+
+### With TensorFlow.js (Recommended)
+
+Use `runtime: 'tfjs'` to work with TensorFlow.js tensors:
 
 ```tsx
-import { useLiteRtTfjsModel } from 'react-litert';
 import * as tf from '@tensorflow/tfjs-core';
+import { useModel } from 'react-litert';
 
 function ImageClassifier() {
-  const { status, run, error } = useLiteRtTfjsModel({
+  const { status, run, error, accelerator } = useModel({
     modelUrl: '/models/mobilenet_v2.tflite',
+    runtime: 'tfjs',
   });
 
   async function classify(image: tf.Tensor4D) {
     if (status !== 'ready') return;
-    
+
     const output = await run(image);
-    // output is a tf.Tensor or array of tf.Tensors
-    const predictions = await output.data();
-    console.log('Predictions:', predictions);
+
+    // Handle different output formats
+    if (Array.isArray(output)) {
+      const predictions = await output[0].data();
+      console.log('Predictions:', predictions);
+    } else {
+      const predictions = await output.data();
+      console.log('Predictions:', predictions);
+    }
   }
 
   if (status === 'idle' || status === 'initializing-runtime' || status === 'compiling') {
@@ -72,6 +83,34 @@ function ImageClassifier() {
       <button onClick={() => classify(imageTensor)}>Classify Image</button>
     </div>
   );
+}
+```
+
+### With Raw LiteRT Tensors
+
+Use `runtime: 'litert'` for direct LiteRT tensor manipulation (no TensorFlow.js dependency):
+
+```tsx
+import { createTensor } from '@litertjs/core';
+import { useModel } from 'react-litert';
+
+function RawInference() {
+  const { status, run } = useModel({
+    modelUrl: '/models/my_model.tflite',
+    runtime: 'litert', // Works with raw LiteRT Tensors
+  });
+
+  async function predict() {
+    if (status !== 'ready') return;
+
+    // Create a LiteRT tensor
+    const input = createTensor('float32', [1, 224, 224, 3], new Float32Array(224 * 224 * 3));
+
+    const output = await run(input);
+    console.log('Output:', output);
+  }
+
+  return <button onClick={predict}>Run Inference</button>;
 }
 ```
 
@@ -98,26 +137,74 @@ console.log('Input shape:', inputDetails?.[0].shape);
 console.log('Output shape:', outputDetails?.[0].shape);
 ```
 
-## Model Caching
+## Model Options
+
+### Caching
 
 Models are automatically cached by URL. To use a custom cache key:
 
 ```tsx
-const { run } = useLiteRtTfjsModel({
+const { run } = useModel({
   modelUrl: '/models/my_model.tflite',
-  id: 'my-custom-cache-key', // Optional: custom cache key
+  runtime: 'tfjs',
+  id: 'my-custom-cache-key', // Custom cache key
 });
 ```
 
-## Lazy Loading
+### Accelerator Preference
+
+Specify which accelerators to try in order:
+
+```tsx
+const { run } = useModel({
+  modelUrl: '/models/my_model.tflite',
+  runtime: 'tfjs',
+  acceleratorPreference: ['webgpu', 'wasm'], // Try WebGPU first, fallback to WASM
+});
+```
+
+### Lazy Loading
 
 Load models only when needed:
 
 ```tsx
-const { run } = useLiteRtTfjsModel({
+const { run } = useModel({
   modelUrl: '/models/my_model.tflite',
+  runtime: 'tfjs',
   lazy: true, // Don't load until run() is called
 });
+```
+
+## Migration from Deprecated Hooks
+
+If you're using the deprecated hooks, here's how to migrate to `useModel`:
+
+### From `useLiteRtTfjsModel`
+
+**Before:**
+
+```tsx
+const { run } = useLiteRtTfjsModel({ modelUrl: '/model.tflite' });
+```
+
+**After:**
+
+```tsx
+const { run } = useModel({ modelUrl: '/model.tflite', runtime: 'tfjs' });
+```
+
+### From `useLiteRtModel`
+
+**Before:**
+
+```tsx
+const { runRaw } = useLiteRtModel({ modelUrl: '/model.tflite' });
+```
+
+**After:**
+
+```tsx
+const { run } = useModel({ modelUrl: '/model.tflite', runtime: 'litert' });
 ```
 
 ## Next Steps
@@ -125,4 +212,3 @@ const { run } = useLiteRtTfjsModel({
 - [API Reference](./api-reference/litert-provider) - Detailed API documentation
 - [Advanced Usage](./advanced-usage) - Raw LiteRT tensors and advanced features
 - [Examples](./examples) - Complete example applications
-

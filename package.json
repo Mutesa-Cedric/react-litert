@@ -13,11 +13,11 @@
     "node": ">=16.6.0"
   },
   "keywords": [
-    "WebAI",
-    "litert",
-    "google",
-    "lite runtime",
-    "react"
+    "webai",
+    "litert react",
+    "google lite runtime react",
+    "lite runtime react",
+    "litert react native"
   ],
   "license": "MIT",
   "repository": {
