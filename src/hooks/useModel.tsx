@@ -1,11 +1,13 @@
 import { getCachedModel, setCachedModel } from '../internal/modelCache';
 import type {
   Accelerator,
+  InferModelResult,
+  LiteRtInput,
   LiteRtModelStatus,
-  ModelInput,
-  ModelOutput,
+  LiteRtOutput,
+  TfjsInput,
+  TfjsOutput,
   UseModelOptions,
-  UseModelResult,
 } from '../types/public';
 import { useLiteRtRuntime } from './useLiteRtRuntime';
 import { loadAndCompile, Tensor, type CompiledModel } from '@litertjs/core';
@@ -13,9 +15,26 @@ import { runWithTfjsTensors } from '@litertjs/tfjs-interop';
 import type * as tf from '@tensorflow/tfjs-core';
 import { useCallback, useEffect, useState } from 'react';
 
-export function useModel<In = ModelInput, Out = ModelOutput>(
-  options: UseModelOptions
-): UseModelResult<In, Out> {
+/**
+ * A unified hook for running models with either TensorFlow.js or LiteRT runtime.
+ *
+ * @example
+ * // Using TensorFlow.js runtime
+ * const { run } = useModel({
+ *   modelUrl: '/models/model.tflite',
+ *   runtime: 'tfjs',
+ * });
+ * // `run` will have type: (input: TfjsInput) => Promise<TfjsOutput>
+ *
+ * @example
+ * // Using LiteRT runtime (use when you want to deal with raw LiteRT tensors)
+ * const { run } = useModel({
+ *   modelUrl: '/models/model.tflite',
+ *   runtime: 'litert',
+ * });
+ * // `run` will have type: (input: LiteRtInput) => Promise<LiteRtOutput>
+ */
+export function useModel<const T extends UseModelOptions>(options: T): InferModelResult<T> {
   const runtime = useLiteRtRuntime();
 
   const [status, setStatus] = useState<LiteRtModelStatus>('idle');
@@ -70,15 +89,15 @@ export function useModel<In = ModelInput, Out = ModelOutput>(
     compile();
   }, [runtime.status, options.modelUrl]);
 
-  const runRaw = async (input: In, signature?: string): Promise<Out> => {
+  const runRaw = async (input: LiteRtInput, signature?: string): Promise<LiteRtOutput> => {
     if (!model) throw new Error('Model not ready');
     return signature
-      ? (model.run(signature, input as Tensor | Tensor[]) as Out)
-      : (model.run(input as Tensor | Tensor[]) as Out);
+      ? (model.run(signature, input as Tensor | Tensor[]) as LiteRtOutput)
+      : (model.run(input as Tensor | Tensor[]) as LiteRtOutput);
   };
 
   const runWithTfjs = useCallback(
-    async (input: In, signature?: string): Promise<Out> => {
+    async (input: TfjsInput, signature?: string): Promise<TfjsOutput> => {
       if (status !== 'ready' || !model) {
         throw new Error('LiteRT model is not ready yet');
       }
@@ -89,14 +108,14 @@ export function useModel<In = ModelInput, Out = ModelOutput>(
           model,
           signature,
           input as tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>
-        ) as unknown as Promise<Out>;
+        ) as unknown as Promise<TfjsOutput>;
       }
 
       // default signature
       return runWithTfjsTensors(
         model,
         input as tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>
-      ) as unknown as Promise<Out>;
+      ) as unknown as Promise<TfjsOutput>;
     },
     [status, model]
   );
@@ -123,5 +142,5 @@ export function useModel<In = ModelInput, Out = ModelOutput>(
         shape: Array.from(detail.shape),
         dtype: detail.dtype,
       })) || null,
-  };
+  } as InferModelResult<T>;
 }

@@ -138,6 +138,26 @@ export interface UseModelResult<
   outputDetails: LiteRtTensorInfo[] | null;
 }
 
+export type UseTfjsModelOptions = Omit<UseModelOptions, 'runtime'> & {
+  runtime: 'tfjs';
+};
+
+export type UseLiteRtOnlyModelOptions = Omit<UseModelOptions, 'runtime'> & {
+  runtime: 'litert';
+};
+
+export type UseTfjsModelResult = UseModelResult<TfjsInput, TfjsOutput>;
+export type UseLiteRtOnlyModelResult = UseModelResult<LiteRtInput, LiteRtOutput>;
+
+// Helper type to infer the correct result based on runtime
+export type InferModelResult<T extends UseModelOptions> = T extends { runtime: 'litert' }
+  ? UseLiteRtOnlyModelResult
+  : T extends { runtime: 'tfjs' }
+    ? UseTfjsModelResult
+    : T extends { runtime?: undefined }
+      ? UseTfjsModelResult
+      : UseTfjsModelResult;
+
 export type TfjsInput = tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>;
 
 export type TfjsOutput = tf.Tensor | tf.Tensor[] | Record<string, tf.Tensor>;

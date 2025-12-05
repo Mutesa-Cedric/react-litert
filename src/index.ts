@@ -1,16 +1,25 @@
 export type {
   Accelerator,
+  InferModelResult,
   LiteRtConfig,
+  LiteRtInput,
   LiteRtModelStatus,
+  LiteRtOutput,
   LiteRtRuntimeStatus,
   LiteRtTensorInfo,
+  ModelInput,
+  ModelOutput,
+  TfjsInput,
+  TfjsOutput,
+  UseLiteRtOnlyModelOptions,
+  UseLiteRtOnlyModelResult,
   UseLiteRtRuntimeResult,
   UseLiteRtTfjsModelOptions,
   UseLiteRtTfjsModelResult,
   UseModelOptions,
   UseModelResult,
-  ModelInput,
-  ModelOutput,
+  UseTfjsModelOptions,
+  UseTfjsModelResult,
 } from './types/public';
 
 export { useLiteRtRuntime } from './hooks/useLiteRtRuntime';
