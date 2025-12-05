@@ -7,28 +7,27 @@ async function packCheck() {
   const result = await $`npm pack --dry-run --json`;
   const output = result.stdout.trim();
 
-  // Try to parse JSON from output, handling git hooks and other noise
   let jsonData = null;
 
   try {
     jsonData = JSON.parse(output);
   } catch {
-    const lines = output.split('\n').filter((line) => line.trim());
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
-        try {
-          jsonData = JSON.parse(trimmed);
-          break;
-        } catch {
-          continue;
-        }
+    const lines = output.split('\n');
+    const arrayStartIndex = lines.findIndex((line) => line.trim() === '[');
+    if (arrayStartIndex !== -1) {
+      const jsonString = lines.slice(arrayStartIndex).join('\n');
+      try {
+        jsonData = JSON.parse(jsonString);
+      } catch {
+        // Ignore parse errors
       }
     }
   }
 
-  if (!jsonData) return;
+  if (!jsonData || !Array.isArray(jsonData) || jsonData.length === 0) {
+    signale.error('Failed to parse npm pack output');
+    process.exit(1);
+  }
 
   const files: { path: string }[] = jsonData[0].files;
   const extraFiles = files
